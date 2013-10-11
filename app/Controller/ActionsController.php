@@ -56,12 +56,18 @@ class ActionsController extends AppController {
 	
 	public function authenticate() {
 	  if (!$this->request->is('post')) {
-		$this->err('Post your auth credentials');
+		$this->err('POST your auth credentials (username/password)');
 	  } else {
-		if (!$this->request['username']) {
+		if (!$this->data['username']) {
 		  $this->err('No username supplied');
 		} else {
-		  
+		  if (!$this->data['password']) {
+			$this->err('No password supplied');
+		  } else {
+			if (!$this->Auth->login()) {
+			  $this->err("Invalid credentials");
+			}
+		  }
 		}
 	  }
 	}
@@ -70,12 +76,9 @@ class ActionsController extends AppController {
 	  if (!$this->rendered) {
 		$this->rendered = true;
 		$this->respObj->payload = $this->payload;
-		//$this->header('Content-Type: text/plain');
+		$this->respObj->request = $this->request->data;
 		$this->response->type('text/plain');
-		//print "Content-Type: text/plain\n\n";
 		print json_encode($this->respObj);
-		//$this->set('response', $this->respObj);
-		//$this->render('/Layouts/ajax');
 		exit(0);
 	  }
 	}
