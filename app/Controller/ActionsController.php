@@ -34,12 +34,49 @@ App::uses('Store', 'Model');
  * @link http://book.cakephp.org/2.0/en/controllers/pages-controller.html
  */
 class ActionsController extends AppController {
+  
+	public $respObj;
+	public $payload;
+	public $rendered = false;
+  
 	public function beforeFilter() {
 		parent::beforeFilter();
 	    $this->Auth->allow('authenticate'); // Letting users register themselves
+		$this->respObj = new stdClass();
+		$this->respObj->success = true;
+		$this->respObj->message = 'Success';
+		$this->payload = new stdClass();
+		$this->layout = 'ajax';
 	}
 
+	public function err($message = 'There was an error processing the request') {
+	  $this->respObj->success = false;
+	  $this->respObj->message = $message;
+	}
+	
 	public function authenticate() {
-		pr($this->request);
+	  if (!$this->request->is('post')) {
+		$this->err('Post your auth credentials');
+	  } else {
+		if (!$this->request['username']) {
+		  $this->err('No username supplied');
+		} else {
+		  
+		}
+	  }
+	}
+	
+	public function beforeRender() {
+	  if (!$this->rendered) {
+		$this->rendered = true;
+		$this->respObj->payload = $this->payload;
+		//$this->header('Content-Type: text/plain');
+		$this->response->type('text/plain');
+		//print "Content-Type: text/plain\n\n";
+		print json_encode($this->respObj);
+		//$this->set('response', $this->respObj);
+		//$this->render('/Layouts/ajax');
+		exit(0);
+	  }
 	}
 }
