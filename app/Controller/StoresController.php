@@ -22,7 +22,7 @@ class StoresController extends AppController {
  */
 	public function index() {
 		$this->Store->recursive = 0;
-		$this->set('stores', $this->Paginator->paginate());
+		$this->set('stores', $this->Paginator->paginate(array('Store.user_id' => $this->Auth->user('id'))));
 	}
 
 /**

@@ -41,6 +41,8 @@ class ActionsController extends AppController {
   
 	public function beforeFilter() {
 		parent::beforeFilter();
+		$this->Store = new Store();
+		$this->User = new User();
 	    $this->Auth->allow('authenticate'); // Letting users register themselves
 		$this->respObj = new stdClass();
 		$this->respObj->success = true;
@@ -49,19 +51,23 @@ class ActionsController extends AppController {
 		$this->layout = 'ajax';
 	}
 
+	public function notLogged() {
+		$this->err("You are not logged in");
+	}
+
 	public function err($message = 'There was an error processing the request') {
 	  $this->respObj->success = false;
 	  $this->respObj->message = $message;
 	}
 	
 	public function authenticate() {
-	  if (!$this->request->is('post')) {
+	  if (!$this->request->is('post') || !array_key_exists('User', $this->data)) { 
 		$this->err('POST your auth credentials (username/password)');
 	  } else {
-		if (!$this->data['username']) {
+		if (!$this->data['User']['username']) {
 		  $this->err('No username supplied');
 		} else {
-		  if (!$this->data['password']) {
+		  if (!$this->data['User']['password']) {
 			$this->err('No password supplied');
 		  } else {
 			if (!$this->Auth->login()) {
@@ -71,6 +77,57 @@ class ActionsController extends AppController {
 		}
 	  }
 	}
+
+	public function store() {
+		if (!$this->logged_in) {
+			$this->notLogged();
+		} else {
+			if (!array_key_exists('Store',$this->data)) {
+				$this->err("No storage data supplied");
+			} else {
+				if (!array_key_exists('key', $this->data['Store']) || !array_key_exists('data', $this->data['Store'])) {
+					$this->err("POST your key and data");
+				} else {
+					$s = $this->Store->find('first', array('conditions' => array('Store.key' => $this->data['Store']['key'])));
+					if (count($s) < 1) {
+						$this->Store->create();
+					} else {
+						$this->request->data['Store']['id'] = $s['Store']['id'];
+					}
+
+					if (count($s) > 1 && $store['Store']['user_id'] != $this->Auth->user('id')) {
+						$this->err('Unauthorized');
+					} else {
+						$this->request->data['Store']['user_id'] = $this->Auth->user('id');
+						if (!$this->Store->save($this->data)) {
+							$this->err("Couldn't store");
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public function retrieve() {
+		if (!$this->logged_in) {
+			$this->notLogged();
+		} else {
+			if (!array_key_exists('Store',$this->data)) {
+				$this->err("No storage request supplied");
+			} else {
+				if (!array_key_exists('key', $this->data['Store'])) {
+					$this->err("POST your key");
+				} else {
+					$s = $this->Store->find('first', array('conditions' => array('Store.key' => $this->data['Store']['key'], 'Store.user_id' => $this->Auth->user('id'))));
+					if (count($s) < 1) {
+						$this->err('Not found');
+					} else {
+						$this->payload = $s['Store']['data'];
+					}
+				}
+			}
+		}
+	}
 	
 	public function beforeRender() {
 	  if (!$this->rendered) {
@@ -78,7 +135,15 @@ class ActionsController extends AppController {
 		$this->respObj->payload = $this->payload;
 		$this->respObj->request = $this->request->data;
 		$this->response->type('text/plain');
-		print json_encode($this->respObj);
+		$before_wrap = '';
+		$after_wrap = '';
+
+		if (isset($this->request->query['callback'])) {
+			$before_wrap = $this->request->query['callback'] . '(';
+			$after_wrap = ');';
+		}
+
+		print $before_wrap . json_encode($this->respObj) . $after_wrap;
 		exit(0);
 	  }
 	}

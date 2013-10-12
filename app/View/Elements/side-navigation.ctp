@@ -15,6 +15,7 @@
 			<?php
 		}
 
-		?>
+
+		?><li><?php echo $this->Html->link(__('Test Bed'), array('controller' => 'pages', 'action' => 'test')); ?></li>
 	</ul>
 </div>
