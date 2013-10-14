@@ -91,26 +91,29 @@ class ActionsController extends AppController {
 		if (!$this->logged_in) {
 			$this->notLogged();
 		} else {
-			if (!array_key_exists('Store',$this->data)) {
-				$this->err("No storage data supplied");
+			if (!$this->paramExists('key') || !$this->paramExists('data')) {
+				$this->err("POST your key and data");
 			} else {
-				if (!array_key_exists('key', $this->data['Store']) || !array_key_exists('data', $this->data['Store'])) {
-					$this->err("POST your key and data");
+				$this->request->data = array(
+					'Store' => array(
+						'key' => $this->getParam('key'),
+						'data' => $this->getParam('data'),
+					)
+				);
+				
+				$s = $this->Store->find('first', array('conditions' => array('Store.key' => $this->getParam('key'))));
+				if (count($s) < 1) {
+					$this->Store->create();
 				} else {
-					$s = $this->Store->find('first', array('conditions' => array('Store.key' => $this->data['Store']['key'])));
-					if (count($s) < 1) {
-						$this->Store->create();
-					} else {
-						$this->request->data['Store']['id'] = $s['Store']['id'];
-					}
+					$this->request->data['Store']['id'] = $s['Store']['id'];
+				}
 
-					if (count($s) > 1 && $store['Store']['user_id'] != $this->Auth->user('id')) {
-						$this->err('Unauthorized');
-					} else {
-						$this->request->data['Store']['user_id'] = $this->Auth->user('id');
-						if (!$this->Store->save($this->data)) {
-							$this->err("Couldn't store");
-						}
+				if (count($s) > 1 && $s['Store']['user_id'] != $this->Auth->user('id')) {
+					$this->err('Unauthorized');
+				} else {
+					$this->request->data['Store']['user_id'] = $this->Auth->user('id');
+					if (!$this->Store->save($this->data)) {
+						$this->err("Couldn't store");
 					}
 				}
 			}
@@ -121,18 +124,14 @@ class ActionsController extends AppController {
 		if (!$this->logged_in) {
 			$this->notLogged();
 		} else {
-			if (!array_key_exists('Store',$this->data)) {
-				$this->err("No storage request supplied");
+			if (!$this->paramExists('key')) { //!array_key_exists('key', $this->data['Store'])) {
+				$this->err("POST your key");
 			} else {
-				if (!array_key_exists('key', $this->data['Store'])) {
-					$this->err("POST your key");
+				$s = $this->Store->find('first', array('conditions' => array('Store.key' => $this->getParam('key'), 'Store.user_id' => $this->Auth->user('id'))));
+				if (count($s) < 1) {
+					$this->err('Not found');
 				} else {
-					$s = $this->Store->find('first', array('conditions' => array('Store.key' => $this->data['Store']['key'], 'Store.user_id' => $this->Auth->user('id'))));
-					if (count($s) < 1) {
-						$this->err('Not found');
-					} else {
-						$this->payload = $s['Store']['data'];
-					}
+					$this->payload = $s['Store']['data'];
 				}
 			}
 		}

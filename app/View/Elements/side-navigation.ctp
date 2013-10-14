@@ -17,5 +17,6 @@
 
 
 		?><li><?php echo $this->Html->link(__('Test Bed'), array('controller' => 'pages', 'action' => 'test')); ?></li>
+		<li><?php echo $this->Html->link(__('Sandbox'), array('controller' => 'pages', 'action' => 'sandbox')); ?></li>
 	</ul>
 </div>
