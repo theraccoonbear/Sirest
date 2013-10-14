@@ -60,22 +60,28 @@ class ActionsController extends AppController {
 	  $this->respObj->message = $message;
 	}
 	
+	
+
+
+
 	public function authenticate() {
-	  if (!$this->request->is('post') || !array_key_exists('User', $this->data)) { 
-		$this->err('POST your auth credentials (username/password)');
-	  } else {
-		if (!$this->data['User']['username']) {
-		  $this->err('No username supplied');
+		if (!$this->paramExists('username')) {
+			$this->err('No username supplied');
 		} else {
-		  if (!$this->data['User']['password']) {
-			$this->err('No password supplied');
-		  } else {
-			if (!$this->Auth->login()) {
-			  $this->err("Invalid credentials");
+			if (!$this->paramExists('password')) {
+				$this->err('No password supplied');
+			} else {
+				$this->request->data = array(
+					'User' => array(
+						'username' => $this->getParam('username'),
+						'username' => $this->getParam('password')
+					)
+				);
+				if (!$this->Auth->login()) {
+				  $this->err("Invalid credentials");
+				}
 			}
-		  }
 		}
-	  }
 	}
 
 	public function store() {
@@ -133,7 +139,7 @@ class ActionsController extends AppController {
 	  if (!$this->rendered) {
 		$this->rendered = true;
 		$this->respObj->payload = $this->payload;
-		$this->respObj->request = $this->request->data;
+		$this->respObj->request = $this->request;
 		$this->response->type('text/plain');
 		$before_wrap = '';
 		$after_wrap = '';

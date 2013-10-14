@@ -55,6 +55,40 @@ class AppController extends Controller {
 
 	public function beforeFilter() {
 		$this->setViewVars();
-
 	}
+
+	public function getParamExists($name) {
+		return array_key_exists($this->modelClass, $this->request->query) && array_key_exists($name, $this->request->query[$this->modelClass]);
+	}
+
+	public function postParamExists($name) {
+		return array_key_exists($this->modelClass, $this->data) && array_key_exists($name, $this->data[$this->modelClass]);
+	}
+
+	public function paramExists($name) {
+		return $this->postParamExists($name) || $this->getParamExists($name);
+	}
+
+	public function getPostParam($name) {
+		return $this->postParamExists($name) ? $this->data[$this->modelClass][$name] : false;
+	}
+
+	public function getGetParam($name) {
+		return $this->getParamExists($name) ? $this->request->query[$this->modelClass][$name] : false;
+	}
+
+	public function getParam($name, $type = 'either') {
+		if (strtolower($type) == 'post') {
+			return $this->getPostParam($name);
+		} elseif (strtolower($type) == 'get') {
+			return $this->getGetParam($name);
+		} else {
+			if ($this->postParamExists($name)) {
+				return $this->getPostParam($name);
+			} else {
+				return $this->getGetParam($name);
+			}
+		}
+	}
+
 }

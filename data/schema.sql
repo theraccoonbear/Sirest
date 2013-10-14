@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS Stores;
 CREATE TABLE Stores (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
+  `app` varchar(255) NOT NULL DEFAULT '',
   `key` varchar(255) NOT NULL DEFAULT '',
   `data` TEXT NOT NULL,
   `created` DATETIME NOT NULL,

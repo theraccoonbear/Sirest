@@ -1,5 +1,5 @@
 var Sirest = Class.extend({
-	options: {'jsonp': false},
+	options: {'jsonp': true},
 
 	constructor: function(o) {
 		Sirest.super.constructor.call(this);
@@ -7,7 +7,7 @@ var Sirest = Class.extend({
 	},
 	
 	authenticate: function(user, pass, opts) {
-		this.makeRequest('authenticate', {User: {username:user,password:pass}}, opts);
+		this.makeRequest('authenticate', {Store: {username:user,password:pass}}, opts);
 		// var cb = typeof opts.callback == 'function' ? opts.callback : function() {};
 		// $.post('/actions/authenticate', {User: {username:user,password:pass}}, function(dat, status, xhr) {
 		// 	console.log(dat);
@@ -38,7 +38,7 @@ var Sirest = Class.extend({
 
 		if (this.options.jsonp) {
 			$.ajax({
-		        type: 'POST',
+		        type: 'GET',
 		        url: 'http://sirest.snm.com/actions/' + url,
 		        dataType: 'jsonp',
 		        data: params,
