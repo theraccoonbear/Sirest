@@ -41,6 +41,8 @@ class AppController extends Controller {
 		'Session'
 	);
 
+	public $effectiveClass = 'Action';
+	
 	public $logged_in = false;
 
 	public function setViewVars() {
@@ -58,11 +60,11 @@ class AppController extends Controller {
 	}
 
 	public function getParamExists($name) {
-		return array_key_exists($this->modelClass, $this->request->query) && array_key_exists($name, $this->request->query[$this->modelClass]);
+		return array_key_exists($this->effectiveClass, $this->request->query) && array_key_exists($name, $this->request->query[$this->effectiveClass]);
 	}
 
 	public function postParamExists($name) {
-		return array_key_exists($this->modelClass, $this->data) && array_key_exists($name, $this->data[$this->modelClass]);
+		return array_key_exists($this->effectiveClass, $this->data) && array_key_exists($name, $this->data[$this->effectiveClass]);
 	}
 
 	public function paramExists($name) {
@@ -70,11 +72,11 @@ class AppController extends Controller {
 	}
 
 	public function getPostParam($name) {
-		return $this->postParamExists($name) ? $this->data[$this->modelClass][$name] : false;
+		return $this->postParamExists($name) ? $this->data[$this->effectiveClass][$name] : false;
 	}
 
 	public function getGetParam($name) {
-		return $this->getParamExists($name) ? $this->request->query[$this->modelClass][$name] : false;
+		return $this->getParamExists($name) ? $this->request->query[$this->effectiveClass][$name] : false;
 	}
 
 	public function getParam($name, $type = 'either') {

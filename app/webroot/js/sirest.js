@@ -7,7 +7,7 @@ var Sirest = Class.extend({
 	},
 	
 	authenticate: function(user, pass, opts) {
-		this.makeRequest('authenticate', {Store: {username:user,password:pass}}, opts);
+		this.makeRequest('authenticate', {User: {username:user,password:pass}}, opts);
 		// var cb = typeof opts.callback == 'function' ? opts.callback : function() {};
 		// $.post('/actions/authenticate', {User: {username:user,password:pass}}, function(dat, status, xhr) {
 		// 	console.log(dat);

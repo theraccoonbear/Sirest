@@ -41,6 +41,7 @@ class ActionsController extends AppController {
   
 	public function beforeFilter() {
 		parent::beforeFilter();
+		$this->effectiveClass = 'Store';
 		$this->Store = new Store();
 		$this->User = new User();
 	    $this->Auth->allow('authenticate'); // Letting users register themselves
@@ -65,6 +66,8 @@ class ActionsController extends AppController {
 
 
 	public function authenticate() {
+		$this->effectiveClass = 'User';
+	  
 		if (!$this->paramExists('username')) {
 			$this->err('No username supplied');
 		} else {
@@ -74,7 +77,7 @@ class ActionsController extends AppController {
 				$this->request->data = array(
 					'User' => array(
 						'username' => $this->getParam('username'),
-						'username' => $this->getParam('password')
+						'password' => $this->getParam('password')
 					)
 				);
 				if (!$this->Auth->login()) {
@@ -141,6 +144,7 @@ class ActionsController extends AppController {
 		$this->respObj->payload = $this->payload;
 		$this->respObj->request = $this->request;
 		$this->response->type('text/plain');
+		$this->respObj->stuff = print_r($this->request->query, true);
 		$before_wrap = '';
 		$after_wrap = '';
 
