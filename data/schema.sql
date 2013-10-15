@@ -19,7 +19,7 @@ CREATE TABLE Stores (
   `user_id` int(10) unsigned NOT NULL,
   `app` varchar(255) NOT NULL DEFAULT '',
   `key` varchar(255) NOT NULL DEFAULT '',
-  `data` TEXT NOT NULL,
+  `data` LONGTEXT NOT NULL,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL DEFAULT '1970-01-01 00:00:01',
   UNIQUE KEY key_idx (`key`),

@@ -42,7 +42,7 @@ $(function() {
 				
 				nextTest: function() {
 						this.size *= 2;
-						if (this.size >= this.maxSize) {
+						if (this.size > this.maxSize) {
 								this.log('Completed');
 								return;
 						}
