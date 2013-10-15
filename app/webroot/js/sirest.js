@@ -25,7 +25,7 @@ var Sirest = Class.extend({
 	},
 
 	store: function(key, data, opts) {
-		//data = JSON.stringify(data);
+		data = JSON.stringify(data);
 
 		if (data.length > this.options.maxChunk) {
 			this.storeChunked(key, data, opts);
@@ -76,7 +76,14 @@ var Sirest = Class.extend({
 	},
 
 	retrieve: function(key, opts) {
-		this.makeRequest('retrieve', {'Store': {'key': key}}, opts);
+		this.makeRequest('retrieve', {'Store': {'key': key}}, {
+			callback: function(resp) {
+				if (typeof resp.payload !== 'undefined') { 
+					resp.payload = JSON.parse(resp.payload);
+				}
+				opts.callback(resp);
+			}
+		});
 	},
 
 	makeRequest: function(url, params, opts) {
