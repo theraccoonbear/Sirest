@@ -94,25 +94,44 @@ class ActionsController extends AppController {
 			if (!$this->paramExists('key') || !$this->paramExists('data')) {
 				$this->err("POST your key and data");
 			} else {
-				$this->request->data = array(
-					'Store' => array(
-						'key' => $this->getParam('key'),
-						'data' => $this->getParam('data'),
-					)
-				);
-				
+				$dataChunk = $this->getParam('data');
+				$dataStr = $dataChunk;
+
 				$s = $this->Store->find('first', array('conditions' => array('Store.key' => $this->getParam('key'))));
-				if (count($s) < 1) {
+
+				$store_id = false;
+				if (!array_key_exists('Store', $s)) {
 					$this->Store->create();
 				} else {
-					$this->request->data['Store']['id'] = $s['Store']['id'];
+					$store_id = $s['Store']['id'];
+					$dataStr = $s['Store']['data'];
 				}
 
+
+				if ($this->paramExists('chunkOffset')) {
+					$offset = $this->getParam('chunkOffset');
+					$totalLen = $offset + strlen($dataChunk);
+					$dataStr = substr_replace($dataStr, $dataChunk, $offset, strlen($dataChunk));
+				} else {
+					$dataStr = $dataChunk;
+				}
+
+				$store_data = array(
+					'Store' => array(
+						'key' => $this->getParam('key'),
+						'data' => $dataStr,
+					)
+				);
+
+				if ($store_id !== false) {
+					$store_data['Store']['id'] = $store_id;
+				}
+				
 				if (count($s) > 1 && $s['Store']['user_id'] != $this->Auth->user('id')) {
 					$this->err('Unauthorized');
 				} else {
-					$this->request->data['Store']['user_id'] = $this->Auth->user('id');
-					if (!$this->Store->save($this->data)) {
+					$store_data['Store']['user_id'] = $this->Auth->user('id');
+					if (!$this->Store->save($store_data)) {
 						$this->err("Couldn't store");
 					}
 				}
@@ -141,9 +160,12 @@ class ActionsController extends AppController {
 	  if (!$this->rendered) {
 		$this->rendered = true;
 		$this->respObj->payload = $this->payload;
-		$this->respObj->request = $this->request;
+		// $this->respObj->params = $this->request->params;
+		// $this->respObj->query = $this->request->query;
+		$this->respObj->validationError = $this->Store->validationErrors;
 		$this->response->type('text/plain');
-		$this->respObj->stuff = print_r($this->request->query, true);
+		
+		//$this->respObj->stuff = print_r($this->request->query, true);
 		$before_wrap = '';
 		$after_wrap = '';
 

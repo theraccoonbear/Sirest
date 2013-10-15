@@ -3,7 +3,7 @@ $(function() {
 		
 		var TESTS = Class.extend({
 				$output: null,
-				maxSize: 16384,
+				maxSize: 65536,
 				size: 4,
 				
 				constructor: function() {
@@ -21,7 +21,7 @@ $(function() {
 				start: function() {
 						this.clearLog();
 						this.log('Testing storage');
-						this.size = 4;
+						this.size = 32;
 						this.authenticate();
 				},
 				
@@ -53,8 +53,8 @@ $(function() {
 				testStore: function(length) {
 						var ctxt = this;
 						var str = [];
-						for (var i = 1; i < length; i++) {
-								str.push(String.fromCharCode(Math.floor(Math.random() * 128)));
+						for (var i = 0; i < length; i++) {
+								str.push(String.fromCharCode(Math.floor(Math.random() * 26 + 65)));
 						}
 						
 						str = str.join('');
