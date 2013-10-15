@@ -162,7 +162,7 @@ class ActionsController extends AppController {
 		$this->respObj->payload = $this->payload;
 		// $this->respObj->params = $this->request->params;
 		// $this->respObj->query = $this->request->query;
-		$this->respObj->validationError = $this->Store->validationErrors;
+		//$this->respObj->validationError = $this->Store->validationErrors;
 		$this->response->type('text/plain');
 		
 		//$this->respObj->stuff = print_r($this->request->query, true);

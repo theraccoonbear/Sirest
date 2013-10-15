@@ -92,7 +92,7 @@ var Sirest = Class.extend({
 		if (this.options.jsonp) {
 			$.ajax({
 		        type: 'GET',
-		        url: 'http://sirest.snm.com/actions/' + url,
+		        url: 'http://sirest.bhffc.com/actions/' + url,
 		        dataType: 'jsonp',
 		        data: params,
 		        success: cb
