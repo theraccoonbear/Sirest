@@ -17,12 +17,14 @@ DROP TABLE IF EXISTS Stores;
 CREATE TABLE Stores (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
-  `app` varchar(255) NOT NULL DEFAULT '',
   `key` varchar(255) NOT NULL DEFAULT '',
+  `app` varchar(50) NOT NULL DEFAULT '',
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `description` varchar(255) NOT NULL DEFAULT '',
   `data` LONGTEXT NOT NULL,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL DEFAULT '1970-01-01 00:00:01',
-  UNIQUE KEY key_idx (`key`),
+  UNIQUE KEY key_idx (`user_id`,`app`,`key`),
   PRIMARY KEY(`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

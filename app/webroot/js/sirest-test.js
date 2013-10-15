@@ -18,6 +18,10 @@ $(function() {
 						this.$output.append(msg + '<br>');
 				},
 				
+				tick: function() {
+					this.$output.append('.');	
+				},
+				
 				start: function() {
 						this.clearLog();
 						this.log('Testing storage');
@@ -60,6 +64,9 @@ $(function() {
 						str = str.join('');
 						
 						sirest.store('testKey' + this.size, str, {
+							progress: function(idx, count, resp) {
+								ctxt.tick();
+							},
 							callback: function(resp) {
 									if (resp.success) {
 											ctxt.log('Stored.  Confirming...');

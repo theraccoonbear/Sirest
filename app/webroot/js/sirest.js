@@ -3,7 +3,8 @@ var Sirest = Class.extend({
 
 	options: {
 		'jsonp': true,
-		'maxChunk': 2000
+		'maxChunk': 2000,
+		'app': 'default'
 	},
 	
 	
@@ -20,17 +21,24 @@ var Sirest = Class.extend({
 		console.log('Error:'); console.log(error);
 	},
 	
+	setApp: function(app) {
+		this.options.app = app;
+	},
+	
 	authenticate: function(user, pass, opts) {
 		this.makeRequest('authenticate', {'User': {'username': user, 'password': pass}}, opts);
 	},
 
 	store: function(key, data, opts) {
+		var ctxt = this;
 		data = JSON.stringify(data);
+		
+		var app = typeof opts.app !== 'undefined' ? opts.app : ctxt.options.app;
 
 		if (data.length > this.options.maxChunk) {
 			this.storeChunked(key, data, opts);
 		} else {
-			this.makeRequest('store', {Store: {'key': key, 'data': data}}, opts);
+			this.makeRequest('store', {Store: {'key': key, 'app': app, 'data': data}}, opts);
 		}
 	},
 
@@ -43,11 +51,13 @@ var Sirest = Class.extend({
 		var chunks = data.match(this.chunkRgx);
 		var chunkIdx = 0;
 		var finalCallback = typeof opts.callback === 'function' ? opts.callback : function() {};
-
+		var app = typeof opts.app !== 'undefined' ? opts.app : ctxt.options.app;
+		var progressCallback = typeof opts.progress === 'function' ? opts.progress : function() {};
 		
 
 		var chunkedCallback = function(resp) {
 			if (resp.success) {
+				progressCallback(chunkIdx, chunks.length, resp);
 				chunkIdx++;
 				if (chunkIdx < chunks.length) {
 					makeChunkedCall();
@@ -62,7 +72,7 @@ var Sirest = Class.extend({
 		};
 
 		var makeChunkedCall = function() {
-			ctxt.makeRequest('store', {Store: {'key': key, 'data': chunks[chunkIdx], 'chunkOffset': ctxt.chunkIndexOffset(chunkIdx)}}, opts);
+			ctxt.makeRequest('store', {Store: {'app': app, 'key': key, 'data': chunks[chunkIdx], 'chunkOffset': ctxt.chunkIndexOffset(chunkIdx)}}, opts);
 		};
 
 		opts.callback = chunkedCallback;
@@ -76,7 +86,10 @@ var Sirest = Class.extend({
 	},
 
 	retrieve: function(key, opts) {
-		this.makeRequest('retrieve', {'Store': {'key': key}}, {
+		var ctxt = this;
+		var app = typeof opts.app !== 'undefined' ? opts.app : ctxt.options.app;
+		
+		this.makeRequest('retrieve', {'Store': {'app': app, 'key': key}}, {
 			callback: function(resp) {
 				if (typeof resp.payload !== 'undefined') { 
 					resp.payload = JSON.parse(resp.payload);
