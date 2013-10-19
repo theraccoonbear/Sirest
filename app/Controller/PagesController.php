@@ -85,7 +85,7 @@ class PagesController extends AppController {
 		$script = file_get_contents(WWW_ROOT . 'js/sirest.js');
 		$script = str_replace('{{hostname}}', $_SERVER['SERVER_NAME'], $script);
 		$this->layout = 'blank';
-		RequestHandlerComponent::respondAs('application/javascript');
+		$this->RequestHandler->respondAs('application/javascript');
 		$this->set('script', $script);
 	}
 
