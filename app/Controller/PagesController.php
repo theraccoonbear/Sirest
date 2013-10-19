@@ -88,5 +88,9 @@ class PagesController extends AppController {
 		$this->RequestHandler->respondAs('application/javascript');
 		$this->set('script', $script);
 	}
+  
+  public function home() {
+    $this->render(null, 'home');
+  }
 
 }
