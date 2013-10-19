@@ -13,4 +13,5 @@ class Action extends AppModel {
  */
 	public $useTable = false;
 
+  public $defaultApp = 'default';
 }

@@ -34,7 +34,14 @@ $(function() {
 				authenticate: function() {
 						var ctxt = this;
 						this.log('Authenticating...');
-						sirest.authenticate('testuser', 't35t', {
+						
+						var $user = $('#testUsername');
+						var $pass = $('#testPassword');
+						
+						var user = $user.length > 0 ? $user.val() : 'testuser';
+						var pass = $pass.length > 0 ? $pass.val() : 't35t';
+						
+						sirest.authenticate(user, pass, {
 								callback: function(d) {
 									if (d.success) {
 										ctxt.log('Authenticated.');

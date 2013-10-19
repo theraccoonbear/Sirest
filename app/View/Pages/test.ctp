@@ -14,6 +14,8 @@ echo $this->Html->script('sirest-test', array('inline' => false));
 <?php
 
 echo $this->Form->create('test');
+echo $this->Form->input('username');
+echo $this->Form->input('password', array('type' => 'password'));
 echo $this->Form->end('Test Storage');
 
 ?>

@@ -45,7 +45,7 @@ class ActionsController extends AppController {
 		$this->effectiveClass = 'Store';
 		$this->Store = new Store();
 		$this->User = new User();
-	    $this->Auth->allow('authenticate'); // Letting users register themselves
+	  $this->Auth->allow('authenticate'); // Letting users register themselves
 		$this->respObj = new stdClass();
 		$this->respObj->success = true;
 		$this->respObj->message = 'Success';
@@ -95,10 +95,17 @@ class ActionsController extends AppController {
 			if (!$this->paramExists('key') || !$this->paramExists('data')) {
 				$this->err("POST your key and data");
 			} else {
+        $key = $this->getParam('key');
+        $app = $this->paramExists('app') ? $this->getParam('app') : $this->Action->defaultApp;
+      
 				$dataChunk = $this->getParam('data');
 				$dataStr = $dataChunk;
 
-				$s = $this->Store->find('first', array('conditions' => array('Store.key' => $this->getParam('key'))));
+				$s = $this->Store->find('first', array('conditions' => array(
+          'Store.key' => $key,
+          'Store.app' => $app,
+          'Store.user_id' => $this->Auth->user('id')
+        )));
 
 				$store_id = false;
 				if (!array_key_exists('Store', $s)) {
@@ -119,7 +126,8 @@ class ActionsController extends AppController {
 
 				$store_data = array(
 					'Store' => array(
-						'key' => $this->getParam('key'),
+						'key' => $key,
+            'app' => $app,
 						'data' => $dataStr,
 					)
 				);
@@ -144,10 +152,18 @@ class ActionsController extends AppController {
 		if (!$this->logged_in) {
 			$this->notLogged();
 		} else {
-			if (!$this->paramExists('key')) { //!array_key_exists('key', $this->data['Store'])) {
+			if (!$this->paramExists('key')) {
 				$this->err("POST your key");
 			} else {
-				$s = $this->Store->find('first', array('conditions' => array('Store.key' => $this->getParam('key'), 'Store.user_id' => $this->Auth->user('id'))));
+        $key = $this->getParam('key');
+        $app = $this->paramExists('app') ? $this->getParam('app') : $this->Action->defaultApp;
+        
+				$s = $this->Store->find('first', array('conditions' => array(
+          'Store.key' => $key,
+          'Store.app' => $app,
+          'Store.user_id' => $this->Auth->user('id')
+        )));
+        
 				if (count($s) < 1) {
 					$this->err('Not found');
 				} else {
@@ -178,9 +194,6 @@ class ActionsController extends AppController {
 			$this->set('respObj', $this->respObj);
 			$this->set('afterWrap', $after_wrap);
 			$this->render('/Elements/ajax-return');
-
-			//print $before_wrap . json_encode($this->respObj) . $after_wrap;
-			//exit(0);
 		}
 	}
 }
