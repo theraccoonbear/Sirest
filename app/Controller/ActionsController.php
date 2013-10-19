@@ -164,7 +164,7 @@ class ActionsController extends AppController {
 			$this->respObj->payload = $this->payload;
 
 			$this->layout = false;
-			RequestHandlerComponent::respondAs('application/json');
+			$this->RequestHandler->respondAs('application/json');
 
 			$before_wrap = '';
 			$after_wrap = '';
