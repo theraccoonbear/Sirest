@@ -5,7 +5,7 @@ $(function() {
 		
 		var TESTS = Class.extend({
 				$output: null,
-				maxSize: 65536,
+				maxSize: 1048576,
 				size: 4,
 				
 				constructor: function() {
