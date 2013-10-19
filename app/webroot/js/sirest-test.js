@@ -1,5 +1,8 @@
 $(function() {
-		var sirest = new Sirest({jsonp: true});
+		var sirest = new Sirest({
+			jsonp: true,
+			app: 'Sirest Test'
+		});
 		
 		var TESTS = Class.extend({
 				$output: null,

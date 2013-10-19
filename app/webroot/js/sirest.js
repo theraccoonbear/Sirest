@@ -12,6 +12,8 @@ var Sirest = Class.extend({
 		Sirest.super.constructor.call(this);
 		$.extend(this.options, o);
 		this.chunkRgx = new RegExp(".{1," + this.options.maxChunk + "}", 'g');
+		this.options.$sirest = $('#Sirest');
+		console.log(this.options.$sirest.attr('src'))
 	},
 	
 	errHandler: function(event, xhr, settings, error) {
