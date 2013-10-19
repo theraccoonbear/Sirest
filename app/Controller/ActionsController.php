@@ -41,6 +41,7 @@ class ActionsController extends AppController {
   
 	public function beforeFilter() {
 		parent::beforeFilter();
+
 		$this->effectiveClass = 'Store';
 		$this->Store = new Store();
 		$this->User = new User();
@@ -157,25 +158,29 @@ class ActionsController extends AppController {
 	}
 	
 	public function beforeRender() {
-	  if (!$this->rendered) {
-		$this->rendered = true;
-		$this->respObj->payload = $this->payload;
-		// $this->respObj->params = $this->request->params;
-		// $this->respObj->query = $this->request->query;
-		//$this->respObj->validationError = $this->Store->validationErrors;
-		$this->response->type('text/plain');
-		
-		//$this->respObj->stuff = print_r($this->request->query, true);
-		$before_wrap = '';
-		$after_wrap = '';
 
-		if (isset($this->request->query['callback'])) {
-			$before_wrap = $this->request->query['callback'] . '(';
-			$after_wrap = ');';
+		if (!$this->rendered) {
+			$this->rendered = true;
+			$this->respObj->payload = $this->payload;
+
+			$this->layout = false;
+			RequestHandlerComponent::respondAs('application/json');
+
+			$before_wrap = '';
+			$after_wrap = '';
+
+			if (isset($this->request->query['callback'])) {
+				$before_wrap = $this->request->query['callback'] . '(';
+				$after_wrap = ');';
+			}
+
+			$this->set('beforeWrap', $before_wrap);
+			$this->set('respObj', $this->respObj);
+			$this->set('afterWrap', $after_wrap);
+			$this->render('/Elements/ajax-return');
+
+			//print $before_wrap . json_encode($this->respObj) . $after_wrap;
+			//exit(0);
 		}
-
-		print $before_wrap . json_encode($this->respObj) . $after_wrap;
-		exit(0);
-	  }
 	}
 }

@@ -1,6 +1,5 @@
 $(function() {
 		var sirest = new Sirest({
-			jsonp: true,
 			app: 'Sirest Test'
 		});
 		

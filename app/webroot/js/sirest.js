@@ -4,16 +4,18 @@ var Sirest = Class.extend({
 	options: {
 		'jsonp': true,
 		'maxChunk': 2000,
-		'app': 'default'
+		'app': 'default',
+		'hostname': '{{hostname}}'
 	},
 	
 	
 	constructor: function(o) {
 		Sirest.super.constructor.call(this);
+		this.options.jsonp = document.location.hostname !== this.options.hostname;
+
 		$.extend(this.options, o);
 		this.chunkRgx = new RegExp(".{1," + this.options.maxChunk + "}", 'g');
-		this.options.$sirest = $('#Sirest');
-		console.log(this.options.$sirest.attr('src'))
+
 	},
 	
 	errHandler: function(event, xhr, settings, error) {
@@ -37,7 +39,7 @@ var Sirest = Class.extend({
 		
 		var app = typeof opts.app !== 'undefined' ? opts.app : ctxt.options.app;
 
-		if (data.length > this.options.maxChunk) {
+		if (this.options.jsonp && data.length > this.options.maxChunk) {
 			this.storeChunked(key, data, opts);
 		} else {
 			this.makeRequest('store', {Store: {'key': key, 'app': app, 'data': data}}, opts);

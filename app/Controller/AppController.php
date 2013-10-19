@@ -38,7 +38,8 @@ class AppController extends Controller {
             'loginRedirect' => array('controller' => 'stores', 'action' => 'index'),
             'logoutRedirect' => array('controller' => 'users', 'action' => 'login')
         ),
-		'Session'
+		'Session',
+		'RequestHandler'
 	);
 
 	public $effectiveClass = 'Action';
