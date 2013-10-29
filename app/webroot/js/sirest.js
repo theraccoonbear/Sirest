@@ -5,7 +5,9 @@ var Sirest = Class.extend({
 		'jsonp': true,
 		'maxChunk': 2000,
 		'app': 'default',
-		'hostname': '{{hostname}}'
+		'hostname': '{{hostname}}',
+		'encrypt': false,
+		'password': false
 	},
 	
 	
@@ -35,8 +37,12 @@ var Sirest = Class.extend({
 
 	store: function(key, data, opts) {
 		var ctxt = this;
-		console.log(data);
-		console.log(sjcl.encrypt(data, 'p4s5w02d!'));
+		//console.log(data);
+		//var password = 'p4s5w02d!';
+		//var cipher_data = sjcl.encrypt(password, data);
+		if (ctxt.options.encrypt === true && ctxt.options.password !== false) {
+			data = sjcl.encrypt(ctxt.options.password, data);
+		}
 		
 		data = JSON.stringify(data);
 		
@@ -98,8 +104,11 @@ var Sirest = Class.extend({
 		
 		this.makeRequest('retrieve', {'Store': {'app': app, 'key': key}}, {
 			callback: function(resp) {
-				if (typeof resp.payload !== 'undefined') { 
+				if (typeof resp.payload !== 'undefined') {
 					resp.payload = JSON.parse(resp.payload);
+					if (ctxt.options.encrypt === true && ctxt.options.password !== false) {
+						resp.payload = sjcl.decrypt(ctxt.options.password, resp.payload);
+					}
 				}
 				opts.callback(resp);
 			}

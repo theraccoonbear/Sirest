@@ -1,5 +1,8 @@
 $(function() {
-        var sirest = new Sirest();
+        var sirest = new Sirest({
+					encrypt: true,
+					password: 'p4s5w02d!'
+				});
         
         $('#authDisplayForm').submit(function(e) {
                 sirest.authenticate($('#username').val(), $('#password').val(), {
