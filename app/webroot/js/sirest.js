@@ -1,6 +1,6 @@
 var Sirest = Class.extend({
 	chunkRgx: null,
-
+	
 	options: {
 		'jsonp': true,
 		'maxChunk': 2000,
@@ -11,7 +11,7 @@ var Sirest = Class.extend({
 	
 	constructor: function(o) {
 		Sirest.super.constructor.call(this);
-		this.options.jsonp = document.location.hostname !== this.options.hostname;
+		this.options.jsonp = document.location.hostname != this.options.hostname;
 
 		$.extend(this.options, o);
 		this.chunkRgx = new RegExp(".{1," + this.options.maxChunk + "}", 'g');
@@ -35,6 +35,9 @@ var Sirest = Class.extend({
 
 	store: function(key, data, opts) {
 		var ctxt = this;
+		console.log(data);
+		console.log(sjcl.encrypt(data, 'p4s5w02d!'));
+		
 		data = JSON.stringify(data);
 		
 		var app = typeof opts.app !== 'undefined' ? opts.app : ctxt.options.app;
@@ -109,7 +112,7 @@ var Sirest = Class.extend({
 		if (this.options.jsonp) {
 			$.ajax({
 		        type: 'GET',
-		        url: 'http://sirest.bhffc.com/actions/' + url,
+		        url: 'http://' + this.options.hostname + '/actions/' + url,
 		        dataType: 'jsonp',
 		        data: params,
 		        success: cb

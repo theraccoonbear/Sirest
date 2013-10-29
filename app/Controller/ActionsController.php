@@ -179,6 +179,8 @@ class ActionsController extends AppController {
 			$this->rendered = true;
 			$this->respObj->payload = $this->payload;
 
+			Configure::write('debug', 0);
+			$this->autoRender = false;  
 			$this->layout = false;
 			$this->RequestHandler->respondAs('application/json');
 

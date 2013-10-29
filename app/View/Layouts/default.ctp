@@ -1,4 +1,12 @@
 <?php
+
+$this->Html->script(array(
+  'jquery-1.10.2.min',
+  'class',
+  'sjcl',
+  '/sirest.js',
+), array('block' => 'scriptDependencies'));
+
 /**
  *
  * PHP 5
@@ -28,12 +36,14 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		<?php echo $title_for_layout; ?>
 	</title>
 	<?php
+  
 		echo $this->Html->meta('icon');
 
 		echo $this->Html->css('cake.generic');
 
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
+		echo $this->fetch('scriptDependencies');
 		echo $this->fetch('script');
 	?>
 </head>
