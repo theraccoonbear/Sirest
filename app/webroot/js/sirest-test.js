@@ -1,6 +1,8 @@
 $(function() {
 		var sirest = new Sirest({
-			app: 'Sirest Test'
+			app: 'Sirest Test',
+			encrypt: true,
+			password: 's1rest t3s7 p4s5w0rD!'
 		});
 		
 		var TESTS = Class.extend({
