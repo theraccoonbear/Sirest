@@ -8,7 +8,6 @@
 			<th><?php echo $this->Paginator->sort('id'); ?></th>
 			<th><?php echo $this->Paginator->sort('user_id'); ?></th>
 			<th><?php echo $this->Paginator->sort('key'); ?></th>
-			<th><?php echo $this->Paginator->sort('data'); ?></th>
 			<th><?php echo $this->Paginator->sort('created'); ?></th>
 			<th><?php echo $this->Paginator->sort('modified'); ?></th>
 			<th class="actions"><?php echo __('Actions'); ?></th>
@@ -20,7 +19,6 @@
 			<?php echo $this->Html->link($store['User']['username'], array('controller' => 'users', 'action' => 'view', $store['User']['id'])); ?>
 		</td>
 		<td><?php echo h($store['Store']['key']); ?>&nbsp;</td>
-		<td><?php echo h($store['Store']['data']); ?>&nbsp;</td>
 		<td><?php echo h($store['Store']['created']); ?>&nbsp;</td>
 		<td><?php echo h($store['Store']['modified']); ?>&nbsp;</td>
 		<td class="actions">
