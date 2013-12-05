@@ -13,7 +13,7 @@
 		</dd>
 		<dt><?php echo __('Key'); ?></dt>
 		<dd>
-			<?php echo h($store['Store']['key']); ?>
+			<code><?php echo h($store['Store']['app'] . '::' . $store['Store']['key']); ?></code>
 			&nbsp;
 		</dd>
 		<dt><?php echo __('Data'); ?></dt>
