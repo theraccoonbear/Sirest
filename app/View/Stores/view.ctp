@@ -18,7 +18,7 @@
 		</dd>
 		<dt><?php echo __('Data'); ?></dt>
 		<dd>
-			<?php echo h($store['Store']['data']); ?>
+			<pre><?php echo h($store['Store']['data']); ?></pre>
 			&nbsp;
 		</dd>
 		<dt><?php echo __('Created'); ?></dt>
