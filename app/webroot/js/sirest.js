@@ -6,6 +6,7 @@ var Sirest = Class.extend({
 		'maxChunk': 2000,
 		'app': 'default',
 		'hostname': '{{hostname}}',
+		'basepath': '{{basepath}}',
 		'encrypt': false,
 		'password': false
 	},
@@ -16,7 +17,7 @@ var Sirest = Class.extend({
 		this.options.jsonp = document.location.hostname != this.options.hostname;
 
 		$.extend(this.options, o);
-		this.chunkRgx = new RegExp(".{1," + this.options.maxChunk + "}", 'g');
+		this.chunkRgx = new RegExp(".{1," + parseInt(this.options.maxChunk) + "}", 'g');
 
 	},
 	
@@ -37,9 +38,6 @@ var Sirest = Class.extend({
 
 	store: function(key, data, opts) {
 		var ctxt = this;
-		//console.log(data);
-		//var password = 'p4s5w02d!';
-		//var cipher_data = sjcl.encrypt(password, data);
 		if (ctxt.options.encrypt === true && ctxt.options.password !== false) {
 			data = sjcl.encrypt(ctxt.options.password, data);
 		}
@@ -104,7 +102,7 @@ var Sirest = Class.extend({
 		
 		this.makeRequest('retrieve', {'Store': {'app': app, 'key': key}}, {
 			callback: function(resp) {
-				if (typeof resp.payload !== 'undefined') {
+				if (typeof resp.payload === 'string') {
 					resp.payload = JSON.parse(resp.payload);
 					if (ctxt.options.encrypt === true && ctxt.options.password !== false) {
 						resp.payload = sjcl.decrypt(ctxt.options.password, resp.payload);
@@ -121,13 +119,13 @@ var Sirest = Class.extend({
 		if (this.options.jsonp) {
 			$.ajax({
 		        type: 'GET',
-		        url: 'http://' + this.options.hostname + '/actions/' + url,
+		        url: 'http://' + this.options.hostname + this.options.basepath + 'actions/' + url,
 		        dataType: 'jsonp',
 		        data: params,
 		        success: cb
 		    });
 		} else {
-			$.post('/actions/' + url, params, cb, 'json');
+			$.post(this.options.basepath + 'actions/' + url, params, cb, 'json');
 		}
 	}
 

@@ -141,7 +141,7 @@ class ActionsController extends AppController {
 				} else {
 					$store_data['Store']['user_id'] = $this->Auth->user('id');
 					if (!$this->Store->save($store_data)) {
-						$this->err("Couldn't store");
+						$this->err("Couldn't store:" . json_encode($store_data));
 					}
 				}
 			}

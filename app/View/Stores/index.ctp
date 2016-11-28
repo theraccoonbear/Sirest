@@ -14,9 +14,6 @@
 	<?php foreach ($stores as $store): ?>
 	<tr>
 		<td><?php echo $this->Html->link(__($store['Store']['id']), array('action' => 'view', $store['Store']['id'])); ?>&nbsp;</td>
-		<td>
-			<?php echo $this->Html->link($store['User']['username'], array('controller' => 'users', 'action' => 'view', $store['User']['id'])); ?>
-		</td>
 		<td><code><?php echo $this->Html->link(__($store['Store']['app'] . '::' . $store['Store']['key']), array('action' => 'view', $store['Store']['id'])); ?></code>&nbsp;</td>
 		<td><?php echo h($store['Store']['created']); ?>&nbsp;</td>
 		<td><?php echo h($store['Store']['modified']); ?>&nbsp;</td>
